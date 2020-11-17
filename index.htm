@@ -1,48 +1,148 @@
+﻿<!doctype html>
 <html>
-<head>
-	<style>
-		div {
-		    font-family: Tahoma;
-		    color: red;
-		    font-size: 60px;
-		}
-	</style>
-	<script>
-		function get() {
-			var date_future = new Date();
-	
-			var date_now = new Date(1988,7,10,7,0,0);
-	
-			// get total seconds between the times
-			var delta = Math.abs(date_future - date_now) / 1000;
-		
-			// calculate (and subtract) whole days
-			var days = Math.floor(delta / 86400);
-			delta -= days * 86400;
-	
-			// calculate (and subtract) whole hours
-			var hours = Math.floor(delta / 3600) % 24;
-			delta -= hours * 3600;
-	
-			// calculate (and subtract) whole minutes
-			var minutes = Math.floor(delta / 60) % 60;
-			delta -= minutes * 60;
-	
-			// what's left is seconds
-			var seconds = Math.floor(delta % 60);  // in theory the modulus is not required
-	
-			document.getElementById("div").innerHTML = (withZero(days) + " Days, " + withZero(hours) + " Hours, " + withZero(minutes) + " Minutes, " + withZero(seconds) + " Seconds");
-		}
-		function withZero(x) {
-			if (x < 10) return "0" + x; return x;
-		}
-	</script>
-</head>
-<body>
-	<div><b>Anas</b> Age :)</div>
-	<br/>
-	<div id="div"></div>
 
-	<script>window.setInterval(get, 1000);</script>
+<head>
+    <title>Birth Dates</title>
+    <script type="text/javascript">
+        function getAge(dateString, spanid) {
+
+            var now = new Date();
+            var today = new Date(now.getYear(), now.getMonth(), now.getDate());
+
+            var yearNow = now.getYear();
+            var monthNow = now.getMonth();
+            var dateNow = now.getDate();
+
+            var dob = new Date(dateString.substring(6, 10),
+                dateString.substring(0, 2) - 1,
+                dateString.substring(3, 5)
+            );
+
+            var yearDob = dob.getYear();
+            var monthDob = dob.getMonth();
+            var dateDob = dob.getDate();
+
+            var age = {};
+            var ageString = "";
+            var yearString = "";
+            var monthString = "";
+            var dayString = "";
+
+
+            yearAge = yearNow - yearDob;
+
+            if (monthNow >= monthDob)
+                var monthAge = monthNow - monthDob;
+            else {
+                yearAge--;
+                var monthAge = 12 + monthNow - monthDob;
+            }
+
+            if (dateNow >= dateDob)
+                var dateAge = dateNow - dateDob;
+            else {
+                monthAge--;
+                var dateAge = 31 + dateNow - dateDob;
+
+                if (monthAge < 0) {
+                    monthAge = 11;
+                    yearAge--;
+                }
+            }
+
+            age = {
+                years: yearAge,
+                months: monthAge,
+                days: dateAge
+            };
+
+            if (age.years > 1) yearString = " years";
+            else yearString = " year";
+            if (age.months > 1) monthString = " months";
+            else monthString = " month";
+            if (age.days > 1) dayString = " days";
+            else dayString = " day";
+
+
+            if ((age.years > 0) && (age.months > 0) && (age.days > 0))
+                ageString = age.years + yearString + ", " + age.months + monthString + ", and " + age.days + dayString + " old.";
+            else if ((age.years == 0) && (age.months == 0) && (age.days > 0))
+                ageString = "Only " + age.days + dayString + " old!";
+            else if ((age.years > 0) && (age.months == 0) && (age.days == 0))
+                ageString = age.years + yearString + " old. Happy Birthday!!";
+            else if ((age.years > 0) && (age.months > 0) && (age.days == 0))
+                ageString = age.years + yearString + " and " + age.months + monthString + " old.";
+            else if ((age.years == 0) && (age.months > 0) && (age.days > 0))
+                ageString = age.months + monthString + " and " + age.days + dayString + " old.";
+            else if ((age.years > 0) && (age.months == 0) && (age.days > 0))
+                ageString = age.years + yearString + " and " + age.days + dayString + " old.";
+            else if ((age.years == 0) && (age.months > 0) && (age.days == 0))
+                ageString = age.months + monthString + " old.";
+            else ageString = "Oops! Could not calculate age!";
+
+            return ageString;
+            // document.getElementById(spanid).innerHTML =
+            //     "<font style='font-size:12px;font-weight:bold;'>" + ageString + "</b>"
+        }
+
+        function xyz() {
+
+            var alaa = {
+                span: 'alaa',
+                dob: '07/30/1983'
+            };
+            var anas = {
+                span: 'anas',
+                dob: '08/10/1988'
+            };
+            var omar = {
+                span: 'omar',
+                dob: '05/31/1993'
+            };
+            var adham = {
+                span: 'adham',
+                dob: '11/04/1998'
+            };
+            var karam = {
+                span: 'karam',
+                dob: '08/13/2012'
+            };
+
+            setTimeout("displayAges()", 1000);
+        }
+
+        function displayAges() {
+            var ages = document.getElementById("ages");
+
+
+            var age = getAge('07/30/1983', 'alaa');
+            ages.appendChild(getNode(age));
+
+            age = getAge('08/10/1988', 'anas');
+            ages.appendChild(getNode(age));
+
+            age = getAge('05/31/1993', 'omar');
+            ages.appendChild(getNode(age));
+
+            age = getAge('11/04/1998', 'adham');
+            ages.appendChild(getNode(age));
+
+            age = getAge('08/13/2012', 'karam');
+            ages.appendChild(getNode(age));
+        }
+
+        function getNode(age) {
+            var node = document.createElement("H2");
+            var textnode = document.createTextNode(age);
+            node.appendChild(textnode);
+            return node;
+        }
+    </script>
+</head>
+
+<body onload="xyz()">
+    <h1>GOOD MORNING</h1>
+    <div id="ages"></div>
 </body>
+
 </html>
